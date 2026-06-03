@@ -22,8 +22,11 @@
          class="md-header__site-link">
         {{ config.extra.domain | d(config.site_url | d(config.site_name, true) | replace("https://", "") | replace("http://", "") | replace("/", ""), true) }}
       </a>
+      {# `data-md-component="header-topic"` lets mkdocs-material's instant
+         navigation swap this span on every route change — without it the
+         build-time title would stay frozen (the header isn't re-rendered). #}
       {% if page and page.title %}
-        <span class="md-header__breadcrumb">{{ page.title }}</span>
+        <span class="md-header__breadcrumb" data-md-component="header-topic">{{ page.title }}</span>
       {% endif %}
     </div>
 
