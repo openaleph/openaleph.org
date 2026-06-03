@@ -4,14 +4,18 @@ Guidance for Claude Code when working in this repository.
 
 ## What this is
 
-The **production website for [dataresearchcenter.org](https://dataresearchcenter.org)**
-(the Data and Research Center, DARC), built with [MkDocs](https://www.mkdocs.org/)
+The **production website for [openaleph.org](https://openaleph.org)** — OpenAleph,
+the open-source platform to search documents and structured data for investigative
+newsrooms and research organizations, developed by the Data and Research Center
+(DARC). Built with [MkDocs](https://www.mkdocs.org/)
 + [Material for MkDocs](https://squidfunk.github.io/mkdocs-material/). Content is
 plain markdown under `docs/`, built and deployed to S3 by GitHub Actions on push to
 `main`.
 
-This is **no longer a shared template** for downstream DARC sites — other sites
-clone this repo. Only the design layer (`darc-zensical.css`) is shared upstream.
+**Forked from the dataresearchcenter.org website repo.** The only shared piece is
+the design layer (`darc-zensical.css`, loaded by URL — see below); everything else
+(pages, branding, nav, deploy target) is openaleph-specific. Keep project changes
+here; only `darc-zensical.css` changes belong upstream.
 Zensical (the mkdocs-material successor) can still run the same `mkdocs.yml` as a
 drop-in, but the production toolchain and the blog/optimize/redirects plugins are
 Material's — prefer `mkdocs`.
@@ -32,25 +36,23 @@ CI=true mkdocs build                   # also runs the image `optimize` plugin (
 ```
 docs/
   index.md               # pages (markdown)
-  what-we-do.md  who-we-are.md  projects.md  contact.md
-  blog/                  # mkdocs-material blog plugin (index.md + posts/)
-  reference.md           # authoring reference (every component, copy-pasteable)
-  typography.md
-  assets/                # images (profiles, projects, blogs)
+  start.md  managed.md  faq.md  about.md
+  blog/                  # mkdocs-material blog plugin (index.md + posts/) — the "News" section
+  assets/                # images — icons/ (feature symbols), blogs/ (screenshots), logo + favicon
   stylesheets/           # darc-zensical.css is loaded from upstream URL — NOT stored here
     tokens.css           # project tokens (neutrals, accents, spacing, stroke, radii, shadows)
-    components.css       # .screen, .hero, .btn, .grid.cards modifiers, profile cards, chips
-    site.css             # layout chrome — drawer, header, footer, scroll-color, typography, list markers
+    components.css       # .screen, .hero, .btn, .grid.cards modifiers, profile cards, chips, .section-icon
+    site.css             # layout chrome — drawer, header + breadcrumb, footer, scroll-color, typography, list markers
     extra.css            # last-mile site overrides (kept small)
   javascripts/
     scroll-color.js      # per-section bg swap on scroll, light-scheme only
   overrides/             # Material template overrides
     main.html            # block site_nav swap: TOC left, nav as right overlay drawer
-    partials/            # header.html (3-col), footer.html, logo.html, copyright.html
+    partials/            # header.html (3-col + breadcrumb), footer.html, logo.html, copyright.html
     .icons/lucide        # local lucide SVGs (Material ships material/fontawesome/octicons/simple)
 mkdocs.yml               # theme, palette, plugins (meta, blog, search, optimize, redirects), nav, markdown_extensions
 requirements.txt
-.github/workflows/publish.yml   # CI: build (+ optimize) and sync ./site to S3
+.github/workflows/publish.yml   # CI: build (+ optimize) and sync ./site to the openaleph.org S3 bucket
 ```
 
 Note: `darc-zensical.css` is the shared cross-DARC design layer, loaded at build
@@ -64,7 +66,8 @@ put project-specific tweaks there — use the local layers.
 The `optimize` image plugin (`mkdocs.yml`) is `enabled: !ENV [CI, false]` — it runs
 only in CI (and `cache: false`, to dodge a warm-cache race), needing the `pngquant`
 binary (PNG) and Pillow (JPG, via `mkdocs-material[imaging]`). Push to `main` runs
-`.github/workflows/publish.yml`: `mkdocs build`, then sync `./site` to S3.
+`.github/workflows/publish.yml`: `mkdocs build`, then sync `./site` to the
+`openaleph.org` S3 bucket (`eu-central-1`).
 
 ## Design system
 
@@ -101,7 +104,9 @@ Python plugins.
 | Inline text utils | `.muted`, `.dim` |
 | Image opt-outs | `{.no-border}`, `{.no-shadow}` |
 
-See `docs/reference.md` for copy-pasteable snippets.
+Usage examples live in the pages themselves (`index.md`, `start.md`, `managed.md`).
+(The standalone `reference.md` / `typography.md` showcase pages from upstream were
+dropped in this fork.)
 
 ## Layout chrome
 
@@ -110,7 +115,9 @@ See `docs/reference.md` for copy-pasteable snippets.
   sections carry no padding; stacked sections are separated by a gap. Material's
   content-container inset is neutralized in `components.css`.
 - **Header**: 3-column grid (`md-header__title` | centered `md-logo` | actions
-  group with palette / search / source / burger). Always-visible burger.
+  group with palette / search / source / burger). `md-header__title` is a
+  breadcrumb — the domain (`extra.domain`, falling back to the `site_url` host) +
+  the current page title in bold (e.g. "openaleph.org  About"). Always-visible burger.
 - **Drawer**: `.md-sidebar--primary` repurposed as a right-side overlay panel
   (`max-width: min(22rem, 85vw)`, offset hard shadow, slides in via the
   `#__drawer` checkbox). Always rendered (`main.html` ignores `hide: navigation`,
@@ -126,10 +133,11 @@ See `docs/reference.md` for copy-pasteable snippets.
 `md-header--bg-{color}` on `.md-header` as `data-background-color` sections
 cross the viewport midpoint.
 
-**Light mode only** — dark mode (`data-md-color-scheme="slate"`) keeps the
-darc-zensical palette regardless of which section is active. The CSS gate is in
-`site.css`: `body[data-md-color-scheme="default"].bg--*`. (The palette is
-currently slate-only.)
+**Light mode only** — the CSS gate in `site.css` is
+`body[data-md-color-scheme="default"].bg--*`, so the per-section background only
+swaps in the light (`default`) scheme. This site is **light-only**
+(`palette: { scheme: default }`); if a dark scheme is later added it keeps the
+darc-zensical palette regardless of section.
 
 ## Conventions
 
@@ -152,9 +160,12 @@ currently slate-only.)
   Material — it's bundled locally in `docs/overrides/.icons/lucide/` and
   registered via the emoji `custom_icons` option, so `:lucide-*:` still works.
 
-## For other DARC sites
+## Relationship to upstream
 
-This repo is no longer an upstream template — clone it as a starting point. To
-adapt a clone, edit `mkdocs.yml` (`site_name`, `site_url`, `repo_url`, `nav`,
-logos, `extra.social`), `docs/*.md`, and `docs/stylesheets/extra.css`. Don't
-modify the upstream `darc-zensical.css` design layer (it's loaded by URL).
+This site is a **fork of the dataresearchcenter.org website repo**. The only shared
+piece is the design layer `darc-zensical.css` (loaded by URL from
+[`zensical-theme-darc`](https://github.com/dataresearchcenter/zensical-theme-darc))
+— don't edit it here; pull upstream design changes by keeping that URL current.
+Everything else is openaleph-specific: `mkdocs.yml` (`site_name`, `site_url`,
+`extra.domain`, `nav`, logos, `extra.social`), `docs/*.md`, and the local
+stylesheets (`tokens.css`, `components.css`, `site.css`, `extra.css`).
