@@ -14,12 +14,17 @@
 <header class="{{ class }}" data-md-component="header">
   <div class="md-header__inner md-grid">
 
-    {# LEFT – site name (grid column 1, by source order) #}
+    {# LEFT – breadcrumb: domain + current page title (grid column 1).
+       Mirrors the live site, e.g. "openaleph.org  About". The domain is
+       derived from site_url so it stays correct for any downstream site. #}
     <div class="md-header__title">
       <a href="{{ config.extra.homepage | d(nav.homepage.url, true) | url }}"
          class="md-header__site-link">
-        {{ config.site_name }}
+        {{ config.extra.domain | d(config.site_url | d(config.site_name, true) | replace("https://", "") | replace("http://", "") | replace("/", ""), true) }}
       </a>
+      {% if page and page.title %}
+        <span class="md-header__breadcrumb">{{ page.title }}</span>
+      {% endif %}
     </div>
 
     {# CENTER – clickable logo back to home (grid column 2, auto-width) #}

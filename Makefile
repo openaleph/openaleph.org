@@ -18,4 +18,4 @@ clean:
 	rm -rf site
 
 publish: build
-	aws s3 --endpoint-url https://s3.investigativedata.org sync ./site s3://dataresearchcenter.org
+	aws s3 --endpoint-url https://s3.investigativedata.org sync ./site s3://openaleph.org

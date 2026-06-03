@@ -285,8 +285,14 @@ body[data-md-color-scheme="slate"] .md-sidebar--nav-overlay {
   text-overflow: ellipsis;
   flex: 0 1 auto;
   height: auto;
-  line-height: normal;
-  letter-spacing: .04em;     /* slightly looser tracking, more brand-feel */
+  /* Match the live header breadcrumb typography ("openaleph.org  About"):
+     Inter, 16px, normal tracking, medium weight. The page-title span overrides
+     weight to 700; without this the span would inherit the Sligoil mono face. */
+  font-family: var(--font-sans);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: normal;
 }
 
 .md-header__site-link {
@@ -298,8 +304,10 @@ body[data-md-color-scheme="slate"] .md-sidebar--nav-overlay {
 
 .md-header__breadcrumb {
   font-weight: 700;
-  margin-left: .3rem;
-  display: none;
+  display: none;          /* spacing comes from .md-header__title's .3rem gap */
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 @media screen and (min-width: 40em) {
   .md-header__breadcrumb { display: inline; }

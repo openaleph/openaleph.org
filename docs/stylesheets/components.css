@@ -24,10 +24,29 @@
 /* Per-image opt-outs:  ![](url){.no-border}  /  {.no-shadow}  */
 .md-typeset img.no-border {
   border: none;
+  box-shadow: none;
 }
 
 .md-typeset img.no-shadow {
   box-shadow: none;
+}
+
+/* Centered feature symbol above a section heading (index "Upload / Process /
+   Search / Collaborate"), borderless and uniform height — mirrors the
+   openaleph.org image-block icons that sit above each feature block. */
+.md-typeset img.section-icon {
+  display: block;
+  margin: 0 auto 1.25rem;
+  width: 200px;
+  max-width: 100%;
+  height: auto;
+  border: none;
+  box-shadow: none;
+}
+
+/* Center an image within the content flow (e.g. a logo atop a post). */
+.md-typeset img.center {
+  margin-inline: auto;
 }
 
 /* Inline text utilities – usage: `text {.muted}` or `text {.dim}` */
@@ -119,9 +138,9 @@ main.md-main>*,
 main.md-main {
   padding: 2rem 1rem;
 }
-.screen + .screen {
+/* .screen + .screen {
   margin-block-start: 4rem;
-}
+} */
 
 /* Neutralise material's own content-container inset so main's padding is the
    only horizontal inset (the desktop TOC-left layout in site.css re-adds its
@@ -201,20 +220,20 @@ main.md-main {
   gap: 2rem;
   align-items: center;
   width: 100%;
-  margin-bottom: 4rem;
+  margin-bottom: 2rem;
 }
 
 @media (min-width: 768px) {
   .hero {
     grid-template-columns: 5fr 6fr;
-    gap: 4rem;
-    margin-bottom: 6rem;
+    gap: 2rem;
+    margin-bottom: 3rem;
   }
 }
 
 @media (min-width: 1024px) {
   .hero {
-    margin-bottom: 8rem;
+    margin-bottom: 4rem;
   }
 }
 
@@ -295,17 +314,55 @@ body[data-md-color-scheme="slate"] .md-typeset .hero--landing>p {
   gap: var(--s);
 }
 
-/* h2 inside any hero sits flush with the top of its column. */
-.md-typeset .hero h2 {
-  margin-top: 0;
+/* Hero titles sit flush with the top of their column and hold a fixed
+   1.25rem gap to the teaser — matches the openaleph.org hero rhythm.
+   Scoped away from `.hero--landing`, which keeps its own title spacing. */
+.md-typeset .hero:not(.hero--landing) h1,
+.md-typeset .hero:not(.hero--landing) h2 {
+  margin: 0;
   padding-top: 0;
+  padding-bottom: 1.25rem;
 }
 
-/* Hero columns just stretch the image edge-to-edge; the global image
-   border below provides the visual frame. */
+/* Content-column rhythm: paragraphs are flush; the visible gaps come from
+   the title's padding-bottom (above) and the action row's margin-top (below),
+   so title → teaser → buttons spacing matches live exactly. */
+.md-typeset .hero > div > p {
+  margin: 0;
+}
+
+/* A leading tagline paragraph (`**text**`) sits .25rem above the title. */
+.md-typeset .hero > div > p:first-child {
+  margin-bottom: .25rem;
+}
+
+/* Hero image fills its cell; we inset that cell with padding so the image
+   reads smaller than its column — reproducing openaleph.org's summed
+   media-col + media padding (responsive: 1rem → 3.5rem → 6rem). */
 .md-typeset .hero img {
   width: 100%;
   height: auto;
+}
+
+.md-typeset .hero > p:has(img),
+.md-typeset .hero > img {
+  padding: 1rem;
+}
+
+@media (min-width: 768px) {
+
+  .md-typeset .hero > p:has(img),
+  .md-typeset .hero > img {
+    padding: 3rem;
+  }
+}
+
+@media (min-width: 1024px) {
+
+  .md-typeset .hero > p:has(img),
+  .md-typeset .hero > img {
+    padding: 5rem;
+  }
 }
 
 /* If the last paragraph of a hero is just a row of `.btn` links,
