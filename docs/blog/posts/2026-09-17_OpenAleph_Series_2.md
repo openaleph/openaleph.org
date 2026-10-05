@@ -2,7 +2,7 @@
 date: 2026-09-17
 ---
 
-# Context is evidence: investigating a leak with OpenAleph
+# Context is Evidence: Investigating a Leak with OpenAleph
 
 > This time, we’re tracing people, products and potential customers through a 250GB leak from Hacking Team.
 
